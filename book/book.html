@@ -1,0 +1,161 @@
+<div ng-controller="movieController">
+    <div class="modal fade" id="addMovie" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Add new book title</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Enter book name" ng-model="book.title">
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="tel" class="form-control" placeholder="Enter book ISBN-10 number" ng-model="book.isbn" pattern="[0-9]*">
+                                </div>
+                                <div class="form-group">
+                                    <textarea class="form-control" placeholder="Enter book Description" ng-model="book.description">
+                                    </textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="book rating">BOOK RATINGS?</label>
+                                    <select class="form-control" ng-model="book.rating">
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="book review">Book Review</label>
+                                    <textarea class="form-control" rows="3" ng-model="book.review" placeholder="Write book review"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" ng-model="book.author" placeholder="Enter reviewer name">
+                                </div>
+                                <pre>{{book | json}}</pre>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="well">
+                                    <a href="http://www.amazon.com/gp/product/{{book.isbn}}">
+                                        <img ng-src="http://images.amazon.com/images/P/{{book.isbn}}.01.ZTZZZZZZ.jpg" alt="{{book.title}}" class="img-responsive" style="margin:auto" />
+                                    </a>
+                                    <p class="text-center"><strong>Rating: {{book.rating}}/5</strong>
+                                    </p>
+                                </div>
+                                <div>
+                                    <a href="http://www.amazon.com/gp/product/{{book.isbn}}">
+                                        <h2 class="text-primary">{{book.title}}</h2>
+                                    </a>
+                                    <p>BOOK-ISBN : {{book.isbn}}</p>
+                                    <p>MOVIE-DESCRIPTION:-{{book.description}}</p>
+                                    <blockquote>
+                                        <p>{{book.review}}</p>
+                                        <footer><em>{{book.author}}</em>
+                                        </footer>
+                                    </blockquote>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-click="saveMovie(book)" ng-show="!editMovie">Save Book</button>
+                    <button type="button" class="btn btn-primary" ng-show="editMovie" ng-click="saveEdit()">Edit Save </button>
+                </div>
+                <!--modal-footer-->
+            </div>
+            <!--model-content-->
+            </form>
+        </div>
+        <!--modal-dialog-->
+    </div>
+
+    <!-- nav bar start  -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Book Logo</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <button class="btn btn-default navbar-btn" data-toggle="modal" data-target="#addMovie">add new book
+                        </button>
+                    </li>
+                </ul>
+                <form class="navbar-form navbar-left">
+                    <div class="form-group has-feedback">
+                        <!-- <label  class="control-feedback"></label> -->
+                        <input type="text" placeholder="Search book here" class="form-control searchBox" ng-model="movieFilter">
+                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                    </div>
+                </form>
+                <a href="#/login" class="btn btn-primary outline navbar-btn navbar-right ">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <!-- navbar ends  -->
+    <div class="container">
+        <div ng-repeat="movie in movies | filter:movieFilter">
+            <!--ng-repeat-->
+            <div class="col-md-3">
+                <div class="thumbnail" ng-mouseenter="addClass()" ng-mouseleave="removeClass()">
+                    <a href="https://www.amazon.com/gp/product/{{movie.isbn}}">
+                        <img ng-src="http://images.amazon.com/images/P/{{movie.isbn}}.01.ZTZZZZZZ.jpg" alt="{{movie.title}}">
+                    </a>
+                    <p class="text-center h3">Ratings: {{movie.rating}}/5</p>
+                    <h4 class="text-center">
+							  <span class="label label-primary" ng-repeat="(x, y) in movie.genres">{{x}}</span>
+							  </h4>
+                    <hr>
+                    <div class="caption">
+                        <div ng-show="!showReview">
+                            <h4 class="text-center">
+										    <a href="https://www.amazon.com/gp/product/{{movie.isbn}}">
+										    <strong>{{movie.title}}</strong>
+										    </a>
+										    <small><em>-{{movie.author}}</em></small>
+										    </h4>
+                            <p>{{movie.description}}</p>
+                        </div>
+                        <div ng-show="showReview">
+                            <h4 class="text-center"><strong>Movie Review:	</strong></h4>
+                            <p><em>{{movie.review}}</em>
+                            </p>
+                        </div>
+                        <div class="text-center">
+                        <button class="btn btn-primary raised " ng-click="showReview=false" ng-show="showReview">
+                            Details
+                        </button>
+                        <button class="btn btn-primary outline" ng-click="showReview=true" ng-show="!showReview">Review
+                        </button>
+                        <button class="btn btn-primary outline btn-margin" ng-click="showAdmin = true" ng-show="!showAdmin">Admin
+                        </button>
+                        <button class="btn btn-primary raised btn-margin" ng-click="showAdmin = false" ng-show="showAdmin">Close
+                        </button>
+                        </div>
+                        <div ng-if="showAdmin" class="text-center">
+                            <!-- <h3 class="text-info text-center text-capitalize">admin area</h3> -->
+                            <p>&nbsp;</p>
+                            <button class="btn btn-primary btn-sm" ng-click="editContent(movie)">Edit</button>
+                            <button class="btn btn-danger btn-sm" ng-click="deletePost(movie)">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
